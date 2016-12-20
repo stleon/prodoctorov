@@ -11,12 +11,17 @@ class DoctorsSpider(scrapy.Spider):
                 '//a[contains(@class, "fio")]/@href').extract():
             yield scrapy.Request(
                 response.urljoin(href), callback=self.parse_doctor)
-        '''
-        next_page = response.xpath('').extract_first()
-            if next_page is not None:
-                next_page = response.urljoin(next_page)
-                yield scrapy.Request(next_page, callback=self.parse)
-        '''
+
+        # TODO need universal xpath for next page
+        next_page = response.xpath(
+            '//*[@id="content"]/div[2]/div/div[3]/div[2]/div/span[2]/a/@href'
+        ).extract_first()
+
+        if next_page is not None:
+            next_page = response.urljoin(next_page)
+            self.log('='*80)
+            self.log(next_page)
+            yield scrapy.Request(next_page, callback=self.parse)
 
     def parse_doctor(self, response):
         stepen = response.xpath('//div[@class="label"]/text()')
