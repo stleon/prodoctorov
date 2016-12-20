@@ -8,4 +8,12 @@
 
 class ProdoctorovPipeline(object):
     def process_item(self, item, spider):
+        item['views'] = int(item['views'].strip()[:-1])
+        item['profession'] = ','.join(item['profession'])
+        if item['grade'] == u'степень неизвестна':
+            item['grade'] = u'неизвестна'
+        item['experience'] = item['experience'].replace(u'стаж', '')
+        for i in ('+', '-'):
+            item['recommend'] = item['recommend'].replace(i, '')
+        item['recommend'] = float(item['recommend'])
         return item

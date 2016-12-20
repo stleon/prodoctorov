@@ -36,14 +36,12 @@ class DoctorsSpider(scrapy.Spider):
             '//*[@id="main"]/div[1]/div[1]/div[1]/div/div[1]/span/span[2]/a/text()'
         ).extract_first()
 
-
         item = ProdoctorovItem()
 
         item['name'] = response.xpath(
             '//*[@id="content"]/div[2]/div/div[2]/h1/span/text()').extract_first(
             )
-        item['profession'] = response.xpath(
-            '//*[@id="content"]/div[2]/div/div[2]/div[1]/a/text()').extract()
+        item['profession'] = response.xpath('//div[@class="doctor_head_spec"]/a/text()').extract()
         item['grade'] = stepen[0].extract()
         item['category'] = stepen[1].extract()
         item['experience'] = stepen[2].extract()
@@ -60,7 +58,7 @@ class DoctorsSpider(scrapy.Spider):
         item['attitude'] = response.xpath(
             '//*[@id="menu"]/div[6]/div[2]/div/text()').extract_first()
         item['sms'] = sms
-        item['views'] = response.xpath('//*[@id="menu"]/div[9]/div[2]/div/text()').extract_first().strip()[:-1]
+        item['views'] = response.xpath('//*[@id="menu"]/div[9]/div[2]/div/text()').extract_first()
         # item['city'] = response.xpath('//*[@id="town"]/text()').extract_first()
         item['info'] = info
 
