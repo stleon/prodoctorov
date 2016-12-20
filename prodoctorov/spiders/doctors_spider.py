@@ -1,5 +1,5 @@
 import scrapy
-from prodoctorov.items import ProdoctorovItem
+from prodoctorov.items import DoctorItem, SMSItem, InfoItem
 
 
 class DoctorsSpider(scrapy.Spider):
@@ -21,8 +21,10 @@ class DoctorsSpider(scrapy.Spider):
 
     def parse_doctor(self, response):
         stepen = response.xpath('//div[@class="label"]/text()')
-        sms = {}
-        info = {}
+        info = InfoItem()
+        item = DoctorItem()
+        sms = SMSItem()
+
         sms['plus'] = response.xpath(
             '//*[@id="menu"]/div[7]/div/div[1]/text()').extract_first()
         # TODO format here
@@ -35,8 +37,6 @@ class DoctorsSpider(scrapy.Spider):
         info['company'] = response.xpath(
             '//*[@id="main"]/div[1]/div[1]/div[1]/div/div[1]/span/span[2]/a/text()'
         ).extract_first()
-
-        item = ProdoctorovItem()
 
         item['name'] = response.xpath(
             '//*[@id="content"]/div[2]/div/div[2]/h1/span/text()').extract_first(

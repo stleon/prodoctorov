@@ -3,7 +3,17 @@
 import scrapy
 
 
-class ProdoctorovItem(scrapy.Item):
+class SMSItem(scrapy.Item):
+    plus = scrapy.Field()
+    minus = scrapy.Field()
+
+
+class InfoItem(scrapy.Item):
+    address = scrapy.Field()
+    company = scrapy.Field()
+
+
+class DoctorItem(scrapy.Item):
     name = scrapy.Field()
     profession = scrapy.Field()
     grade = scrapy.Field()
@@ -15,6 +25,6 @@ class ProdoctorovItem(scrapy.Item):
     informing = scrapy.Field()
     quality = scrapy.Field()
     attitude = scrapy.Field()
-    sms = scrapy.Field()
     views = scrapy.Field()
-    info = scrapy.Field()
+    sms = scrapy.Field(serializer=SMSItem)
+    info = scrapy.Field(serializer=InfoItem)
