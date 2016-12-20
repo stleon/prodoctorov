@@ -1,4 +1,5 @@
 import scrapy
+from prodoctorov.items import ProdoctorovItem
 
 
 class DoctorsSpider(scrapy.Spider):
@@ -33,32 +34,35 @@ class DoctorsSpider(scrapy.Spider):
         ).extract_first()
         info['company'] = response.xpath(
             '//*[@id="main"]/div[1]/div[1]/div[1]/div/div[1]/span/span[2]/a/text()'
-        ).extract_first(),
-        yield {
-            'name': response.xpath(
-                '//*[@id="content"]/div[2]/div/div[2]/h1/span/text()').extract(
-                ),
-            'profession': response.xpath(
-                '//*[@id="content"]/div[2]/div/div[2]/div[1]/a/text()')
-            .extract(),
-            'grade': stepen[0].extract(),
-            'category': stepen[1].extract(),
-            'experience': stepen[2].extract(),
-            'rating': response.xpath(
-                '//*[@id="menu"]/div[1]/div[2]/span/text()').extract_first(),
-            'recommend': response.xpath(
-                '//*[@id="menu"]/div[2]/div[2]/div/text()').extract_first(),
-            'effectivenessv': response.xpath(
-                '//*[@id="menu"]/div[3]/div[2]/div/text()').extract_first(),
-            'informing': response.xpath(
-                '//*[@id="menu"]/div[4]/div[2]/div/text()').extract_first(),
-            'quality': response.xpath(
-                '//*[@id="menu"]/div[5]/div[2]/div/text()').extract_first(),
-            'attitude': response.xpath(
-                '//*[@id="menu"]/div[6]/div[2]/div/text()').extract_first(),
-            'sms': sms,
-            'views': response.xpath('//*[@id="menu"]/div[9]/div[2]/div/text()')
-            .extract_first().strip()[:-1],
-            'city': response.xpath('//*[@id="town"]/text()').extract_first(),
-            'info': info,
-        }
+        ).extract_first()
+
+
+        item = ProdoctorovItem()
+
+        item['name'] = response.xpath(
+            '//*[@id="content"]/div[2]/div/div[2]/h1/span/text()').extract_first(
+            )
+        item['profession'] = response.xpath(
+            '//*[@id="content"]/div[2]/div/div[2]/div[1]/a/text()').extract()
+        item['grade'] = stepen[0].extract()
+        item['category'] = stepen[1].extract()
+        item['experience'] = stepen[2].extract()
+        item['rating'] = response.xpath(
+            '//*[@id="menu"]/div[1]/div[2]/span/text()').extract_first()
+        item['recommend'] = response.xpath(
+            '//*[@id="menu"]/div[2]/div[2]/div/text()').extract_first()
+        item['effectiveness'] = response.xpath(
+            '//*[@id="menu"]/div[3]/div[2]/div/text()').extract_first()
+        item['informing'] = response.xpath(
+            '//*[@id="menu"]/div[4]/div[2]/div/text()').extract_first()
+        item['quality'] = response.xpath(
+            '//*[@id="menu"]/div[5]/div[2]/div/text()').extract_first()
+        item['attitude'] = response.xpath(
+            '//*[@id="menu"]/div[6]/div[2]/div/text()').extract_first()
+        item['sms'] = sms
+        item['views'] = response.xpath('//*[@id="menu"]/div[9]/div[2]/div/text()').extract_first().strip()[:-1]
+        # item['city'] = response.xpath('//*[@id="town"]/text()').extract_first()
+        item['info'] = info
+
+
+        yield item

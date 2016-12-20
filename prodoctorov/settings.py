@@ -68,6 +68,9 @@ ROBOTSTXT_OBEY = True
 #    'prodoctorov.pipelines.SomePipeline': 300,
 #}
 
+# ITEM_PIPELINES = {'prodoctorov.pipelines.JsonWriterPipeline': 300}
+FEED_EXPORT_ENCODING = 'utf-8'
+
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html
 #AUTOTHROTTLE_ENABLED = True

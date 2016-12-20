@@ -18,4 +18,3 @@ class ProdoctorovItem(scrapy.Item):
     sms = scrapy.Field()
     views = scrapy.Field()
     info = scrapy.Field()
-
