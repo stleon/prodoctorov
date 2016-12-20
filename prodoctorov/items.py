@@ -1,14 +1,23 @@
 # -*- coding: utf-8 -*-
 
-# Define here the models for your scraped items
-#
-# See documentation in:
-# http://doc.scrapy.org/en/latest/topics/items.html
-
 import scrapy
 
 
 class ProdoctorovItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
-    pass
+    name = scrapy.Field()
+    profession = scrapy.Field()
+    grade = scrapy.Field()
+    category = scrapy.Field()
+    experience = scrapy.Field()
+    rating = scrapy.Field()
+    recommend = scrapy.Field()
+    effectiveness = scrapy.Field()
+    informing = scrapy.Field()
+    quality = scrapy.Field()
+    attitude = scrapy.Field()
+    sms = scrapy.Field()
+    views = scrapy.Field()
+    info = scrapy.Field()
+    address = scrapy.Field()
+    company = scrapy.Field()
+
