@@ -14,15 +14,12 @@ BOT_NAME = 'prodoctorov'
 SPIDER_MODULES = ['prodoctorov.spiders']
 NEWSPIDER_MODULE = 'prodoctorov.spiders'
 
-
-# Crawl responsibly by identifying yourself (and your website) on the user-agent
 USER_AGENT = 'Agent. User Agent'
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
 
-# Configure maximum concurrent requests performed by Scrapy (default: 16)
-#CONCURRENT_REQUESTS = 32
+CONCURRENT_REQUESTS = 16
 
 # Configure a delay for requests for the same website (default: 0)
 # See http://scrapy.readthedocs.org/en/latest/topics/settings.html#download-delay
@@ -38,11 +35,11 @@ ROBOTSTXT_OBEY = True
 # Disable Telnet Console (enabled by default)
 #TELNETCONSOLE_ENABLED = False
 
-# Override the default request headers:
-#DEFAULT_REQUEST_HEADERS = {
-#   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-#   'Accept-Language': 'en',
-#}
+DEFAULT_REQUEST_HEADERS = {
+    'Accept':
+    'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+    'Accept-Language': 'ru,en-GB;q=0.8,en;q=0.6,en-US;q=0.4',
+}
 
 # Enable or disable spider middlewares
 # See http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
@@ -64,9 +61,7 @@ ROBOTSTXT_OBEY = True
 
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
-ITEM_PIPELINES = {
-    'prodoctorov.pipelines.DoctorPipeline': 300,
-}
+ITEM_PIPELINES = {'prodoctorov.pipelines.DoctorPipeline': 300, }
 
 FEED_EXPORT_ENCODING = 'utf-8'
 

@@ -9,7 +9,6 @@ class DoctorsSpider(scrapy.Spider):
     def parse(self, response):
         for href in response.xpath(
                 '//a[contains(@class, "fio")]/@href').extract():
-            self.log(href)
             yield scrapy.Request(
                 response.urljoin(href), callback=self.parse_doctor)
         '''
@@ -24,6 +23,7 @@ class DoctorsSpider(scrapy.Spider):
         info = InfoItem()
         item = DoctorItem()
         sms = SMSItem()
+        city = response.xpath('//*[@id="town"]/text()').extract_first()
 
         sms['plus'] = response.xpath(
             '//*[@id="menu"]/div[7]/div/div[1]/text()').extract_first()
@@ -31,17 +31,18 @@ class DoctorsSpider(scrapy.Spider):
         sms['minus'] = response.xpath(
             '//*[@id="menu"]/div[7]/div/div[2]/text()').extract_first()
 
-        info['address'] = response.xpath(
+        info['address'] = '%s, %s' % (response.xpath(
             '//*[@id="main"]/div[1]/div[1]/div[1]/div/div[1]/span/span[2]/span/text()'
-        ).extract_first()
+        ).extract_first(), city)
         info['company'] = response.xpath(
             '//*[@id="main"]/div[1]/div[1]/div[1]/div/div[1]/span/span[2]/a/text()'
         ).extract_first()
 
         item['name'] = response.xpath(
-            '//*[@id="content"]/div[2]/div/div[2]/h1/span/text()').extract_first(
-            )
-        item['profession'] = response.xpath('//div[@class="doctor_head_spec"]/a/text()').extract()
+            '//*[@id="content"]/div[2]/div/div[2]/h1/span/text()'
+        ).extract_first()
+        item['profession'] = response.xpath(
+            '//div[@class="doctor_head_spec"]/a/text()').extract()
         item['grade'] = stepen[0].extract()
         item['category'] = stepen[1].extract()
         item['experience'] = stepen[2].extract()
@@ -58,9 +59,8 @@ class DoctorsSpider(scrapy.Spider):
         item['attitude'] = response.xpath(
             '//*[@id="menu"]/div[6]/div[2]/div/text()').extract_first()
         item['sms'] = sms
-        item['views'] = response.xpath('//*[@id="menu"]/div[9]/div[2]/div/text()').extract_first()
-        # item['city'] = response.xpath('//*[@id="town"]/text()').extract_first()
+        item['views'] = response.xpath(
+            '//*[@id="menu"]/div[9]/div[2]/div/text()').extract_first()
         item['info'] = info
-
 
         yield item
