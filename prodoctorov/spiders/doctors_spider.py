@@ -11,7 +11,20 @@ def get_next_page(seq):
 
 class DoctorsSpider(scrapy.Spider):
     name = "doctors"
-    start_urls = ['https://prodoctorov.ru/moskva/vrach/', ]
+
+    def start_requests(self):
+        urls = [
+            'https://prodoctorov.ru/moskva/vrach/#all_spec',
+        ]
+        for url in urls:
+            yield scrapy.Request(url=url, callback=self.professions_parse)
+
+    def professions_parse(self, response):
+        professions = response.xpath('//*[@id="content"]/div[1]/div/div[5]/div/ul/li/ul/li/a/@href').extract()
+        for profession in professions:
+            if profession != '#all_spec':
+                url = response.urljoin(profession)
+                yield scrapy.Request(url, callback=self.parse)
 
     def parse(self, response):
 
@@ -57,6 +70,7 @@ class DoctorsSpider(scrapy.Spider):
         item['grade'] = stepen[0].extract()
         item['category'] = stepen[1].extract()
         item['experience'] = stepen[2].extract()
+        # TODO if not raiting == foo bar
         item['rating'] = response.xpath(
             '//*[@id="menu"]/div[1]/div[2]/span/text()').extract_first()
         item['recommend'] = response.xpath(
@@ -70,8 +84,7 @@ class DoctorsSpider(scrapy.Spider):
         item['attitude'] = response.xpath(
             '//*[@id="menu"]/div[6]/div[2]/div/text()').extract_first()
         item['sms'] = sms
-        item['views'] = response.xpath(
-            '//*[@id="menu"]/div[9]/div[2]/div/text()').extract_first()
+        item['views'] = response.body.split("$('#box .head').html('")[1].split(' ')[0]
         item['info'] = info
 
         yield item
