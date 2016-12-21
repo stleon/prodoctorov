@@ -5,7 +5,7 @@ def clear_float(value):
     value = value.strip()
     for i in ('+', '-', u'−'):
         value = value.replace(i, '')
-    return float(value)
+    return float(value) if len(value) > 1 else 0
 
 
 class DoctorPipeline(object):

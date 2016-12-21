@@ -13,14 +13,14 @@ class DoctorsSpider(scrapy.Spider):
     name = "doctors"
 
     def start_requests(self):
-        urls = [
-            'https://prodoctorov.ru/moskva/vrach/#all_spec',
-        ]
+        urls = ['https://prodoctorov.ru/moskva/vrach/#all_spec', ]
         for url in urls:
             yield scrapy.Request(url=url, callback=self.professions_parse)
 
     def professions_parse(self, response):
-        professions = response.xpath('//*[@id="content"]/div[1]/div/div[5]/div/ul/li/ul/li/a/@href').extract()
+        professions = response.xpath(
+            '//*[@id="content"]/div[1]/div/div[5]/div/ul/li/ul/li/a/@href'
+        ).extract()
         for profession in professions:
             if profession != '#all_spec':
                 url = response.urljoin(profession)
@@ -38,7 +38,7 @@ class DoctorsSpider(scrapy.Spider):
 
         if next_page is not None:
             next_page = response.urljoin(next_page)
-            self.log('='*80)
+            self.log('=' * 80)
             self.log(next_page)
             yield scrapy.Request(next_page, callback=self.parse)
 
@@ -50,10 +50,10 @@ class DoctorsSpider(scrapy.Spider):
         city = response.xpath('//*[@id="town"]/text()').extract_first()
 
         sms['plus'] = response.xpath(
-            '//*[@id="menu"]/div[7]/div/div[1]/text()').extract_first()
+            '//div[@class="smsplus"]/text()').extract_first()
         # TODO format here
         sms['minus'] = response.xpath(
-            '//*[@id="menu"]/div[7]/div/div[2]/text()').extract_first()
+            '//div[@class="smsminus"]/text()').extract_first()
 
         info['address'] = '%s, %s' % (response.xpath(
             '//*[@id="main"]/div[1]/div[1]/div[1]/div/div[1]/span/span[2]/span/text()'
@@ -74,17 +74,19 @@ class DoctorsSpider(scrapy.Spider):
         item['rating'] = response.xpath(
             '//*[@id="menu"]/div[1]/div[2]/span/text()').extract_first()
         item['recommend'] = response.xpath(
-            '//*[@id="menu"]/div[2]/div[2]/div/text()').extract_first()
+            '//div[@class="inoval fon-recommend"]/div/text()').extract_first()
         item['effectiveness'] = response.xpath(
-            '//*[@id="menu"]/div[3]/div[2]/div/text()').extract_first()
+            '//div[@class="inoval fon-results"]/div/text()').extract_first()
         item['informing'] = response.xpath(
-            '//*[@id="menu"]/div[4]/div[2]/div/text()').extract_first()
+            '//div[@class="inoval fon-info"]/div/text()').extract_first()
         item['quality'] = response.xpath(
-            '//*[@id="menu"]/div[5]/div[2]/div/text()').extract_first()
+            '//div[@class="inoval fon-osmotr"]/div/text()').extract_first()
         item['attitude'] = response.xpath(
-            '//*[@id="menu"]/div[6]/div[2]/div/text()').extract_first()
+            '//div[@class="inoval fon-friendliness"]/div/text()'
+        ).extract_first()
         item['sms'] = sms
-        item['views'] = response.body.split("$('#box .head').html('")[1].split(' ')[0]
+        item['views'] = response.body.split("$('#box .head').html('")[1].split(
+            ' ')[0]
         item['info'] = info
 
         yield item
