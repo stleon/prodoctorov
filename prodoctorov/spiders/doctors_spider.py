@@ -2,20 +2,26 @@ import scrapy
 from prodoctorov.items import DoctorItem, SMSItem, InfoItem
 
 
+def get_next_page(seq):
+    for i in seq:
+        if 'vrach' not in i:
+            return i
+    return None
+
+
 class DoctorsSpider(scrapy.Spider):
     name = "doctors"
     start_urls = ['https://prodoctorov.ru/moskva/vrach/', ]
 
     def parse(self, response):
+
         for href in response.xpath(
                 '//a[contains(@class, "fio")]/@href').extract():
             yield scrapy.Request(
                 response.urljoin(href), callback=self.parse_doctor)
 
-        # TODO need universal xpath for next page
-        next_page = response.xpath(
-            '//*[@id="content"]/div[2]/div/div[3]/div[2]/div/span[2]/a/@href'
-        ).extract_first()
+        resp = response.xpath('//span[@class="page"]/a/@href').extract()
+        next_page = get_next_page(resp)
 
         if next_page is not None:
             next_page = response.urljoin(next_page)
