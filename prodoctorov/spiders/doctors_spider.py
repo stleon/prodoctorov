@@ -44,15 +44,24 @@ class DoctorsSpider(scrapy.Spider):
             yield scrapy.Request(url=url, callback=self.professions_parse)
 
     def professions_parse(self, response):
+        all_doctors = sum(
+            (int(i.strip())
+             for i in response.xpath('//span[contains(@class, "cnt")]/text()')
+             .extract()))
+        self.log('=' * 80)
+        self.log(response.url)
+        self.log(all_doctors)
+        self.log('=' * 80)
+
         professions = response.xpath(
             '//*[@id="content"]/div[1]/div/div[5]/div/ul/li/ul/li/a/@href'
         ).extract()
         for profession in professions:
             if profession != '#all_spec':
                 url = response.urljoin(profession)
-                yield scrapy.Request(url, callback=self.parse)
+                yield scrapy.Request(url, callback=self.parse_doctor_list)
 
-    def parse(self, response):
+    def parse_doctor_list(self, response):
 
         for href in response.xpath(
                 '//a[contains(@class, "fio")]/@href').extract():
