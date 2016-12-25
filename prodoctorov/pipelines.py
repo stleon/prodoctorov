@@ -22,6 +22,6 @@ class DoctorPipeline(object):
         item['informing'] = clear_float(item['informing'])
         item['quality'] = clear_float(item['quality'])
         item['attitude'] = clear_float(item['attitude'])
-        item['sms']['plus'] = clear_float(item['sms']['plus'])
-        item['sms']['minus'] = clear_float(item['sms']['minus'])
+        item['sms']['plus'] = int(clear_float(item['sms']['plus']))
+        item['sms']['minus'] = int(clear_float(item['sms']['minus']))
         return item
