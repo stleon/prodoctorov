@@ -31,8 +31,16 @@ class DoctorsSpider(scrapy.Spider):
     name = "doctors"
 
     def start_requests(self):
-        urls = ['https://prodoctorov.ru/moskva/vrach/#all_spec', ]
-        for url in urls:
+        yield scrapy.Request(
+            url='https://prodoctorov.ru/ajax/town/moskva/',
+            headers={'X-Requested-With': 'XMLHttpRequest'},
+            callback=self.parse_city)
+
+    def parse_city(self, response):
+        cities = response.xpath('//ul/li/a/@href | //ul/li/b/a/@href').extract(
+        )
+        for city in cities:
+            url = response.urljoin('%svrach/#all_spec' % city)
             yield scrapy.Request(url=url, callback=self.professions_parse)
 
     def professions_parse(self, response):
