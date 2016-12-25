@@ -1,11 +1,29 @@
+import urlparse
+
 import scrapy
-from prodoctorov.items import DoctorItem, SMSItem, InfoItem
+
+from prodoctorov.items import DoctorItem, InfoItem, SMSItem
 
 
-def get_next_page(seq):
-    for i in seq:
-        if 'vrach' not in i:
-            return i
+def parse_page_number(url):
+    try:
+        return int(urlparse.parse_qs(urlparse.urlparse(url).query)['page'][0])
+    except KeyError:
+        return 1
+
+
+def get_next_page(pages, current_page):
+    """
+    [u'?page=2'], 1
+    [u'/moskva/akusher/', u'?page=3'], 2
+    [u'/moskva/akusher/?page=3', u'?page=5'], 4
+    [u'/moskva/akusher/?page=61'], 62
+    """
+
+    for page in pages:
+        page_number = parse_page_number(page)
+        if page_number > current_page:
+            return '?page=%s' % page_number
     return None
 
 
@@ -34,13 +52,12 @@ class DoctorsSpider(scrapy.Spider):
                 response.urljoin(href), callback=self.parse_doctor)
 
         resp = response.xpath('//span[@class="page"]/a/@href').extract()
-        next_page = get_next_page(resp)
+        next_page = get_next_page(
+            pages=resp, current_page=parse_page_number(response.url))
 
         if next_page is not None:
-            next_page = response.urljoin(next_page)
-            self.log('=' * 80)
-            self.log(next_page)
-            yield scrapy.Request(next_page, callback=self.parse)
+            yield scrapy.Request(
+                response.urljoin(next_page), callback=self.parse)
 
     def parse_doctor(self, response):
         stepen = response.xpath('//div[@class="label"]/text()')

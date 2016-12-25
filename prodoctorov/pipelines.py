@@ -10,6 +10,8 @@ def clear_float(value):
 
 class DoctorPipeline(object):
     def process_item(self, item, spider):
+        if not item['rating']:
+            item['rating'] = ''
         item['views'] = int(item['views'])
         item['profession'] = ','.join(item['profession'])
         if item['grade'] == u'степень неизвестна':
