@@ -85,7 +85,6 @@ class DoctorsSpider(scrapy.Spider):
 
         sms['plus'] = response.xpath(
             '//div[@class="smsplus"]/text()').extract_first()
-        # TODO format here
         sms['minus'] = response.xpath(
             '//div[@class="smsminus"]/text()').extract_first()
 
@@ -104,9 +103,8 @@ class DoctorsSpider(scrapy.Spider):
         item['grade'] = stepen[0].extract()
         item['category'] = stepen[1].extract()
         item['experience'] = stepen[2].extract()
-        # TODO if not raiting == foo bar
         item['rating'] = response.xpath(
-            '//*[@id="menu"]/div[1]/div[2]/span/text()').extract_first()
+            '//div[@class="inoval_big"]/span/text()').extract_first()
         item['recommend'] = response.xpath(
             '//div[@class="inoval fon-recommend"]/div/text()').extract_first()
         item['effectiveness'] = response.xpath(
