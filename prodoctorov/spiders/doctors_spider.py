@@ -40,7 +40,7 @@ class DoctorsSpider(scrapy.Spider):
         cities = response.xpath('//ul/li/a/@href | //ul/li/b/a/@href').extract(
         )
         for city in cities:
-            url = response.urljoin('%svrach/#all_spec' % city)
+            url = response.urljoin('%svrach/' % city)
             yield scrapy.Request(url=url, callback=self.professions_parse)
 
     def professions_parse(self, response):
@@ -54,7 +54,7 @@ class DoctorsSpider(scrapy.Spider):
         self.log('=' * 80)
 
         professions = response.xpath(
-            '//*[@id="content"]/div[1]/div/div[5]/div/ul/li/ul/li/a/@href'
+            '//div[@class="town_vrach_all town_menu active"]/ul/li/ul/li/a/@href'
         ).extract()
         for profession in professions:
             if profession != '#all_spec':
